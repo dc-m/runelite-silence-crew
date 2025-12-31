@@ -1,8 +1,0 @@
-{
-  "id": "silence-crew",
-  "name": "Silence Crew!",
-  "description": "Filter crewmate messages while sailing - keep the important ones like cargo full, mute the rest",
-  "tags": ["sailing", "crew", "crewmate", "filter", "chat", "mute", "salvage"],
-  "author": "You",
-  "version": "1.0.0"
-}
