@@ -58,13 +58,6 @@ public interface SilenceCrewConfig extends Config
 	)
 	String importantSection = "important";
 
-	@ConfigSection(
-		name = "Advanced",
-		description = "Advanced settings",
-		position = 3
-	)
-	String advancedSection = "advanced";
-
 	// ==================== IMPORTANT MESSAGES ====================
 
 	@ConfigItem(
@@ -77,23 +70,6 @@ public interface SilenceCrewConfig extends Config
 		section = importantSection
 	)
 	default boolean alwaysShowCargoFull()
-	{
-		return true;
-	}
-
-	// ==================== ADVANCED ====================
-
-	@ConfigItem(
-		keyName = "treatAmbiguousAsOwn",
-		name = "Treat Unknown as Own Crew",
-		description = "<html>When the plugin can't determine if a crewmate belongs to you or another player,<br>" +
-			"this setting controls which filter rules apply.<br><br>" +
-			"<b>ON:</b> Use 'Your Crew' settings<br>" +
-			"<b>OFF:</b> Use 'Others' Crew' settings</html>",
-		position = 0,
-		section = advancedSection
-	)
-	default boolean treatAmbiguousAsOwn()
 	{
 		return true;
 	}

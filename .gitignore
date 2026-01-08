@@ -21,3 +21,7 @@ lombok.config
 
 # Local test files
 *.log
+
+.claude/settings.local.json
+
+RunClient.bat

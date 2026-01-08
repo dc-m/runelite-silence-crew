@@ -141,6 +141,13 @@ public class SilenceCrewPlugin extends Plugin
 	};
 
 	/**
+	 * Idle chatter specific to Cabin Boy Jenkins (ghost speak).
+	 */
+	private static final String[] IDLE_JENKINS = {
+		"woo"
+	};
+
+	/**
 	 * Generic idle chatter patterns shared by multiple crewmates.
 	 */
 	private static final String[] IDLE_GENERIC = {
@@ -199,10 +206,12 @@ public class SilenceCrewPlugin extends Plugin
 		String nameLower = npcName.toLowerCase();
 		if (!isCrewmateByName(nameLower))
 		{
+			log.debug("Not a crewmate: {}", nameLower);
 			return;
 		}
 
 		String message = event.getOverheadText().toLowerCase();
+		log.debug("Crewmate overhead: {} says '{}'", nameLower, message);
 		boolean isOwnCrew = isOwnCrewmate(npc);
 
 		if (shouldFilterMessage(message, isOwnCrew))
@@ -234,12 +243,13 @@ public class SilenceCrewPlugin extends Plugin
 		String message = Text.removeTags(event.getMessage()).toLowerCase();
 		String name = event.getName() != null ? Text.removeTags(event.getName()).toLowerCase() : "";
 
-		if (!isCrewmateMessage(name, message))
+		if (!isCrewmateMessage(name))
 		{
 			return;
 		}
 
-		boolean isOwnCrew = isOwnCrewFromChat(name, message);
+		// Since chat messages don't clearly indicate ownership, default to own crew
+		boolean isOwnCrew = true;
 
 		if (shouldFilterMessage(message, isOwnCrew))
 		{
@@ -255,6 +265,11 @@ public class SilenceCrewPlugin extends Plugin
 	 */
 	private boolean isCrewmateByName(String name)
 	{
+		if (name.isEmpty())
+		{
+			return false;
+		}
+
 		for (String crewmate : CREWMATE_NAMES)
 		{
 			if (name.contains(crewmate) || crewmate.contains(name))
@@ -266,24 +281,19 @@ public class SilenceCrewPlugin extends Plugin
 	}
 
 	/**
-	 * Checks if a chat message is from a crewmate based on speaker name or message content.
+	 * Checks if a chat message is from a crewmate based on speaker name.
+	 * <p>
+	 * Only checks the speaker name to avoid accidentally filtering unrelated
+	 * game messages that might contain similar phrases.
 	 *
-	 * @param name    the speaker name (lowercase)
-	 * @param message the message content (lowercase)
+	 * @param name the speaker name (lowercase)
 	 * @return true if this appears to be a crewmate message
 	 */
-	private boolean isCrewmateMessage(String name, String message)
+	private boolean isCrewmateMessage(String name)
 	{
-		if (isCrewmateByName(name))
-		{
-			return true;
-		}
-
-		// Fall back to checking message content for known crewmate dialogue
-		return matchesAnyPattern(message, SALVAGE_MESSAGES)
-			|| matchesAnyPattern(message, CARGO_FULL_MESSAGES)
-			|| matchesAnyPattern(message, SAILING_STATUS_MESSAGES)
-			|| matchesAnyPattern(message, WARNING_MESSAGES);
+		// Only identify crewmate messages by name to avoid filtering
+		// unrelated game messages (e.g., "You have mined all you can from the shell")
+		return isCrewmateByName(name);
 	}
 
 	/**
@@ -300,21 +310,6 @@ public class SilenceCrewPlugin extends Plugin
 		// Currently defaults to true - may need refinement based on game mechanics
 		// Possible improvements: check NPC interaction options, distance to player's ship, etc.
 		return true;
-	}
-
-	/**
-	 * Determines crewmate ownership from chat context.
-	 * <p>
-	 * Since chat messages don't clearly indicate ownership, this falls back
-	 * to the user's configured preference.
-	 *
-	 * @param name    the speaker name
-	 * @param message the message content
-	 * @return true if this should be treated as the player's own crewmate
-	 */
-	private boolean isOwnCrewFromChat(String name, String message)
-	{
-		return config.treatAmbiguousAsOwn();
 	}
 
 	/**
@@ -381,6 +376,7 @@ public class SilenceCrewPlugin extends Plugin
 	{
 		return matchesAnyPattern(message, IDLE_JOBLESS_JIM)
 			|| matchesAnyPattern(message, IDLE_SIAD)
+			|| matchesAnyPattern(message, IDLE_JENKINS)
 			|| matchesAnyPattern(message, IDLE_GENERIC);
 	}
 
