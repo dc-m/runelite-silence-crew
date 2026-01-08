@@ -41,12 +41,6 @@ Filter messages from other players' crewmates:
 | Filter Sailing Status | Filter sailing operation messages | ON |
 | Filter Warnings | Filter warning messages | ON |
 
-### Advanced
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| Treat Unknown as Own Crew | When ownership is unclear, use "Your Crew" settings | ON |
-
 ## Supported Crewmates
 
 The plugin recognizes dialogue from all sailing crewmates:
